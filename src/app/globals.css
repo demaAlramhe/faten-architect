@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-warm-beige: #f5f0e8;
+    --color-warm-black: #1a1816;
+    --color-accent-gold: #b8860b;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-warm-beige text-warm-black antialiased;
+  }
+
+  /* LTR override for phone/email when needed */
+  .ltr-inline {
+    direction: ltr;
+    unicode-bidi: embed;
+  }
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply outline-none ring-2 ring-accent-gold ring-offset-2 ring-offset-warm-beige focus-visible:ring-2;
+  }
+}
