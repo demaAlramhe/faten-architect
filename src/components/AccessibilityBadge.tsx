@@ -56,8 +56,9 @@ const accessibilitySvg = (
 
 /**
  * עיגול נגישות קבוע – לחיצה פותחת תפריט עם הגדרות נגישות.
+ * חייב להיות מחוץ ל-Footer (ב-layout) כדי שיהיה תמיד גלוי.
  */
-function AccessibilityFloatingBadge() {
+export function AccessibilityFloatingBadge() {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<A11yState>(defaultState);
 
@@ -80,10 +81,10 @@ function AccessibilityFloatingBadge() {
   const toggleContrast = () => updateState({ contrast: state.contrast === "high" ? "normal" : "high" });
 
   return (
-    <div className="fixed bottom-6 end-6 z-50 flex flex-col items-end gap-2">
+    <div className="a11y-widget fixed bottom-6 left-6 z-[9999] flex flex-col items-end gap-2">
       {open && (
         <div
-          className="rounded-xl border-2 border-accent-gold bg-warm-beige p-4 shadow-xl min-w-[200px]"
+          className="a11y-widget rounded-xl border-2 border-accent-gold bg-warm-beige p-4 shadow-xl min-w-[200px]"
           role="dialog"
           aria-label="הגדרות נגישות"
         >
@@ -146,7 +147,7 @@ function AccessibilityFloatingBadge() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent-gold bg-warm-beige text-accent-gold shadow-lg transition hover:scale-105 hover:border-accent-gold-light hover:bg-warm-cream focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2"
+        className="a11y-widget flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent-gold bg-warm-beige text-accent-gold shadow-lg transition hover:scale-105 hover:border-accent-gold-light hover:bg-warm-cream focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2"
         aria-label={open ? "סגור תפריט נגישות" : "פתח תפריט נגישות"}
         aria-expanded={open}
         title="הגדרות נגישות"
@@ -160,12 +161,11 @@ function AccessibilityFloatingBadge() {
 /**
  * תג נגישות בתוך Footer (עיגול + טקסט נגיש).
  */
+/** תג נגישות להצגה ב-Footer בלבד (ללא העיגול הקבוע). */
 export function AccessibilityBadge() {
   return (
-    <>
-      <AccessibilityFloatingBadge />
-      <div
-        className="inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-accent-gold bg-warm-beige/95 px-3 py-2.5 text-accent-gold shadow-sm"
+    <div
+        className="a11y-widget inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-accent-gold bg-warm-beige/95 px-3 py-2.5 text-accent-gold shadow-sm"
         role="img"
         aria-label="האתר תומך בנגישות ובאנשים עם מוגבלות"
         title="נגישות – האתר מותאם לאנשים עם מוגבלות"
@@ -173,6 +173,5 @@ export function AccessibilityBadge() {
         {accessibilitySvg}
         <span className="text-sm font-semibold text-warm-charcoal">נגיש</span>
       </div>
-    </>
   );
 }

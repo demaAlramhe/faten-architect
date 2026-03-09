@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent } from "react";
+import Script from "next/script";
 import { business } from "@/content/siteContent";
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 interface FormState {
   name: string;
@@ -11,17 +14,48 @@ interface FormState {
 
 const initial: FormState = { name: "", phone: "", message: "" };
 
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (el: HTMLElement, options: { sitekey: string; callback: (token: string) => void }) => string;
+      reset: (widgetId: string) => void;
+    };
+  }
+}
+
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(initial);
-  const [errors, setErrors] = useState<Partial<FormState>>({});
+  const [errors, setErrors] = useState<Partial<FormState> & { captcha?: string }>({});
   const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [turnstileReady, setTurnstileReady] = useState(false);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
-  const validate = (values: FormState): Partial<FormState> => {
-    const e: Partial<FormState> = {};
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY || !turnstileReady || !turnstileRef.current || widgetIdRef.current != null) return;
+    const w = window.turnstile;
+    if (w && turnstileRef.current) {
+      widgetIdRef.current = w.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token) => setCaptchaToken(token),
+      });
+    }
+    return () => {
+      if (widgetIdRef.current != null && window.turnstile?.reset) {
+        window.turnstile.reset(widgetIdRef.current);
+      }
+      widgetIdRef.current = null;
+    };
+  }, [turnstileReady]);
+
+  const validate = (values: FormState): Partial<FormState> & { captcha?: string } => {
+    const e: Partial<FormState> & { captcha?: string } = {};
     if (!values.name.trim()) e.name = "נא למלא את השם";
     if (!values.phone.trim()) e.phone = "נא למלא מספר טלפון";
     else if (!/^[\d\s\-+()]+$/.test(values.phone)) e.phone = "מספר טלפון לא תקין";
     if (!values.message.trim()) e.message = "נא למלא את ההודעה";
+    if (TURNSTILE_SITE_KEY && !captchaToken) e.captcha = "נא לאמת שאינך רובוט";
     return e;
   };
 
@@ -40,6 +74,10 @@ export function ContactForm() {
     setForm(initial);
     setErrors({});
     setTouched({});
+    setCaptchaToken(null);
+    if (widgetIdRef.current != null && window.turnstile?.reset) {
+      window.turnstile.reset(widgetIdRef.current);
+    }
   };
 
   return (
@@ -114,6 +152,25 @@ export function ContactForm() {
           </p>
         )}
       </div>
+
+      {TURNSTILE_SITE_KEY && (
+        <>
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            strategy="afterInteractive"
+            onLoad={() => setTurnstileReady(true)}
+          />
+          <div className="flex flex-col gap-1">
+            <div ref={turnstileRef} className="[&_.cf-turnstile]:inline-block" />
+            {errors.captcha && (
+              <p className="text-sm text-red-600" role="alert">
+                {errors.captcha}
+              </p>
+            )}
+          </div>
+        </>
+      )}
+
       <button
         type="submit"
         className="w-full rounded-lg bg-accent-gold px-4 py-3 font-medium text-white transition-colors hover:bg-accent-gold-dark focus-ring"

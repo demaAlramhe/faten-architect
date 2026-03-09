@@ -5,6 +5,7 @@ import { business } from "@/content/siteContent";
 import { JsonLd } from "@/components/JsonLd";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AccessibilityFloatingBadge } from "@/components/AccessibilityBadge";
 
 const heebo = Heebo({
   subsets: ["hebrew", "latin"],
@@ -73,6 +74,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <AccessibilityFloatingBadge />
       </body>
     </html>
   );

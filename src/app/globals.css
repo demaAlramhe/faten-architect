@@ -64,3 +64,16 @@ html[data-a11y-contrast="high"] [class*="text-warm-charcoal"],
 html[data-a11y-contrast="high"] [class*="text-warm-black"] {
   color: #f5f0e8 !important;
 }
+
+/* וידג'ט הנגישות – תמיד גלוי, גם במצב ניגודיות גבוהה */
+html[data-a11y-contrast="high"] .a11y-widget {
+  background-color: #f5f0e8 !important;
+  color: #1a1816 !important;
+  border-color: #b8860b !important;
+}
+html[data-a11y-contrast="high"] .a11y-widget svg {
+  color: #b8860b !important;
+}
+html[data-a11y-contrast="high"] .a11y-widget .text-warm-charcoal {
+  color: #1a1816 !important;
+}
