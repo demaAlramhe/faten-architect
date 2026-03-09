@@ -66,7 +66,6 @@ export function Footer() {
           <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-warm-beige/80">
             Architecture & Interior Design
           </p>
-          <p className="mt-1">{business.city}.</p>
         </div>
 
         <div className="text-center text-xs text-warm-beige/70">
