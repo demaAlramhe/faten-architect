@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { business, logoPath } from "@/content/siteContent";
+import { AccessibilityBadge } from "@/components/AccessibilityBadge";
 
 export function Footer() {
   return (
@@ -60,6 +61,8 @@ export function Footer() {
               Instagram
             </a>
         </nav>
+
+        <AccessibilityBadge />
 
         <div className="text-sm text-warm-beige/90">
           <p className="font-semibold tracking-wide">FATEN</p>

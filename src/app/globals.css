@@ -29,3 +29,38 @@
     @apply outline-none ring-2 ring-accent-gold ring-offset-2 ring-offset-warm-beige focus-visible:ring-2;
   }
 }
+
+/* נגישות – גודל טקסט (משנים את גודל ה-root כדי ש-rem בכל האתר יגדלו) */
+html[data-a11y-font="large"] {
+  font-size: 118%;
+}
+html[data-a11y-font="x-large"] {
+  font-size: 132%;
+}
+
+/* נגישות – ניגודיות גבוהה */
+html[data-a11y-contrast="high"] body {
+  background: #1a1816 !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-contrast="high"] a {
+  color: #d4a84b !important;
+  text-decoration: underline;
+}
+html[data-a11y-contrast="high"] a:hover {
+  color: #f5f0e8 !important;
+}
+html[data-a11y-contrast="high"] [class*="bg-warm-beige"],
+html[data-a11y-contrast="high"] [class*="bg-warm-cream"],
+html[data-a11y-contrast="high"] [class*="bg-warm-sand"] {
+  background-color: #2d2a28 !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-contrast="high"] [class*="bg-warm-charcoal"] {
+  background-color: #1a1816 !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-contrast="high"] [class*="text-warm-charcoal"],
+html[data-a11y-contrast="high"] [class*="text-warm-black"] {
+  color: #f5f0e8 !important;
+}
