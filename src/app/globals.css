@@ -58,23 +58,47 @@
   }
 }
 
-/* נגישות – גודל טקסט דינמי */
+/*
+  נגישות – מפתחות על html (מוגדרים ב-applyA11yState):
+  data-a11y-font-scale, data-a11y-contrast, data-a11y-theme (default|light|dark|grayscale),
+  data-a11y-link-highlight, data-a11y-headings, data-a11y-clickable,
+  data-a11y-readable, data-a11y-motion, data-a11y-cursor, data-a11y-text-align
+  + CSS var: --a11y-font-multiplier (0.9–1.3)
+*/
 html[data-a11y-font-scale] {
   font-size: calc(16px * var(--a11y-font-multiplier, 1));
 }
-html[data-a11y-font-scale="90"] { --a11y-font-multiplier: 0.9; }
-html[data-a11y-font-scale="94"] { --a11y-font-multiplier: 0.94; }
-html[data-a11y-font-scale="100"] { --a11y-font-multiplier: 1; }
-html[data-a11y-font-scale="106"] { --a11y-font-multiplier: 1.06; }
-html[data-a11y-font-scale="112"] { --a11y-font-multiplier: 1.12; }
-html[data-a11y-font-scale="118"] { --a11y-font-multiplier: 1.18; }
-html[data-a11y-font-scale="124"] { --a11y-font-multiplier: 1.24; }
-html[data-a11y-font-scale="130"] { --a11y-font-multiplier: 1.3; }
 
-/* נגישות – ניגודיות גבוהה */
+/* מצבי תצוגה (בהיר / כהה / אפור) */
+html[data-a11y-theme="light"] body {
+  background: #faf7f1 !important;
+  color: #171512 !important;
+}
+html[data-a11y-theme="light"] [class*="bg-warm-charcoal"] {
+  background-color: #2f2c29 !important;
+}
+html[data-a11y-theme="dark"] body {
+  background: #12100f !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-theme="dark"] [class*="bg-warm-beige"],
+html[data-a11y-theme="dark"] [class*="bg-warm-cream"],
+html[data-a11y-theme="dark"] [class*="bg-warm-sand"] {
+  background-color: #242120 !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-theme="grayscale"] body {
+  filter: grayscale(1);
+}
+html[data-a11y-theme="grayscale"] .a11y-widget {
+  filter: none;
+}
+
+/* ניגודיות גבוהה — אחרי מצבי תצוגה כדי לדרוס צבעי רקע */
 html[data-a11y-contrast="high"] body {
   background: #1a1816 !important;
   color: #f5f0e8 !important;
+  filter: none !important;
 }
 html[data-a11y-contrast="high"] a {
   color: #d4a84b !important;
@@ -111,29 +135,35 @@ html[data-a11y-contrast="high"] .a11y-widget .text-warm-charcoal {
   color: #1a1816 !important;
 }
 
-/* מצבי קריאה */
-html[data-a11y-reading="light"] body {
-  background: #faf7f1 !important;
-  color: #171512 !important;
+/* גופן קריא */
+html[data-a11y-readable="on"] body {
+  font-family: system-ui, "Segoe UI", Roboto, "Noto Sans Hebrew", "Noto Sans Arabic", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.02em;
 }
-html[data-a11y-reading="dark"] body {
-  background: #12100f !important;
-  color: #f5f0e8 !important;
-}
-html[data-a11y-reading="dark"] [class*="bg-warm-beige"],
-html[data-a11y-reading="dark"] [class*="bg-warm-cream"],
-html[data-a11y-reading="dark"] [class*="bg-warm-sand"] {
-  background-color: #242120 !important;
-  color: #f5f0e8 !important;
-}
-html[data-a11y-reading="light"] [class*="bg-warm-charcoal"] {
-  background-color: #2f2c29 !important;
+
+/* הפחתת תנועה (למעט וידג'ט הנגישות) */
+html[data-a11y-motion="reduced"] #main *,
+html[data-a11y-motion="reduced"] #main *::before,
+html[data-a11y-motion="reduced"] #main *::after,
+html[data-a11y-motion="reduced"] header *,
+html[data-a11y-motion="reduced"] header *::before,
+html[data-a11y-motion="reduced"] header *::after,
+html[data-a11y-motion="reduced"] footer *,
+html[data-a11y-motion="reduced"] footer *::before,
+html[data-a11y-motion="reduced"] footer *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }
 
 /* הדגשת קישורים */
-html[data-a11y-links="on"] a {
+html[data-a11y-link-highlight="on"] a {
+  background-color: rgba(255, 235, 100, 0.38) !important;
   text-decoration: underline !important;
   text-underline-offset: 3px;
+  border-radius: 0.2em;
+  padding-inline: 0.1em;
 }
 
 /* סמן גדול */
@@ -159,4 +189,18 @@ html[data-a11y-clickable="on"] [role="button"],
 html[data-a11y-clickable="on"] input[type="submit"] {
   box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.45) !important;
   border-radius: 0.7rem;
+}
+
+/* יישור טקסט ראשי */
+html[data-a11y-text-align="start"] #main {
+  text-align: start;
+}
+html[data-a11y-text-align="end"] #main {
+  text-align: end;
+}
+html[data-a11y-text-align="center"] #main {
+  text-align: center;
+}
+html[data-a11y-text-align="natural"] #main {
+  text-align: revert;
 }
