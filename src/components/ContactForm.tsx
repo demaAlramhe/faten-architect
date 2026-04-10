@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, FormEvent } from "react";
 import Script from "next/script";
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xqegvdyk";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mojpokev";
 
 interface FormState {
   name: string;
