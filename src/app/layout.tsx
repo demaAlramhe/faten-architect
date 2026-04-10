@@ -57,6 +57,14 @@ export const metadata: Metadata = {
     description: "תכנון ועיצוב שמדייק את החיים שלך — פונקציונלי, אלגנטי ומרשים.",
     images: ["/projects/logo.png.jpeg"],
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/favicon.ico"],
+  },
   robots: {
     index: true,
     follow: true,
