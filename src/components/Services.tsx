@@ -30,11 +30,17 @@ export function Services() {
         >
           שירותים
         </motion.h2>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-6" role="list">
           {services.map((text, i) => (
             <motion.li
               key={i}
-              className="glass-card group flex gap-3 p-5 sm:p-6"
+              className={`glass-card group flex gap-3 p-5 sm:p-6 lg:col-span-2 ${
+                services.length === 5 && i === 3
+                  ? "lg:col-start-2"
+                  : services.length === 5 && i === 4
+                    ? "lg:col-start-4"
+                    : ""
+              }`}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-20%" }}
