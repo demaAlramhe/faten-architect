@@ -2,79 +2,100 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { hero, logoPath } from "@/content/siteContent";
+import { logoPath } from "@/content/siteContent";
 
 export function Hero() {
   return (
     <section
-      className="relative overflow-hidden bg-warm-cream px-4 py-16 sm:py-20 md:py-24 lg:py-28"
+      className="section-shell relative overflow-hidden bg-warm-cream px-4"
       aria-labelledby="hero-heading"
     >
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-        {/* טקסט – נשאר בצד ימין ב-RTL */}
-        <div className="flex-1 text-center lg:text-right">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-warm-sand/35 to-transparent" />
+      <div className="pointer-events-none absolute -top-32 -left-24 h-72 w-72 rounded-full bg-accent-gold/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 -right-24 h-72 w-72 rounded-full bg-warm-stone/30 blur-3xl" />
+
+      <div className="mx-auto grid max-w-5xl items-center gap-9 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+        <div className="text-center">
+          <motion.p
+            className="text-sm font-medium tracking-[0.18em] text-accent-gold/90 sm:text-base"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+          >
+            אדריכלות ועיצוב פנים
+          </motion.p>
           <motion.h1
             id="hero-heading"
-            className="whitespace-pre-line text-3xl font-semibold leading-tight text-warm-black sm:text-4xl md:text-5xl"
-            initial={{ opacity: 0, y: 12 }}
+            className="mt-4 text-3xl font-semibold leading-[1.35] text-warm-black sm:text-4xl lg:text-[2.7rem]"
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            {hero.headline}
+            תכנון ועיצוב שמדייק את החיים שלך
           </motion.h1>
           <motion.p
-            className="mt-6 text-lg leading-relaxed text-warm-charcoal sm:text-xl"
+            className="mt-5 text-base font-medium tracking-[0.08em] text-warm-charcoal/85 sm:text-lg"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           >
-            {hero.subheadline}
+            פונקציונלי • אלגנטי • מרשים
           </motion.p>
+
+          <motion.div
+            className="mx-auto mt-7 max-w-3xl text-base leading-relaxed text-warm-charcoal sm:text-lg"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
+          >
+            היי, אני פאתן אל רמחי חליפה, אדריכלית ומעצבת פנים. בעלות תואר ראשון באדריכלות, עם 4 שנות ניסיון בתכנון מבני ציבור ומגורים. מלווה פרויקטים בהתאמה אישית — מהבנת הצרכים ועד תכנון חכם וניצול מקסימלי של החלל, עם שפה עיצובית הרמונית וירידה לפרטים.
+          </motion.div>
+
+          <motion.div
+            className="mt-8 flex flex-wrap items-center justify-center gap-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.16 }}
+          >
+            <a
+              href="#contact"
+              className="rounded-full bg-accent-gold px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_-14px_rgba(184,134,11,0.95)] transition hover:-translate-y-0.5 hover:bg-accent-gold-dark focus-ring"
+            >
+              לתיאום שיחת ייעוץ
+            </a>
+            <a
+              href="#projects"
+              className="rounded-full border border-warm-stone bg-white/70 px-6 py-3 text-sm font-semibold text-warm-charcoal transition hover:border-accent-gold/50 hover:bg-white focus-ring"
+            >
+              לצפייה בפרויקטים
+            </a>
+          </motion.div>
         </div>
-        {/* לוגו גדול בתוך עיגול כהה – אנימציה דינמית */}
+
         <motion.div
-          className="relative flex h-52 w-52 shrink-0 items-center justify-center rounded-full bg-warm-charcoal p-5 shadow-xl sm:h-60 sm:w-60 sm:p-6 md:h-64 md:w-64 md:p-6 lg:h-72 lg:w-72 lg:p-7 xl:h-80 xl:w-80 xl:p-8"
+          className="relative mx-auto flex h-[280px] w-[280px] items-center justify-center overflow-hidden rounded-full border border-warm-sand/35 bg-warm-charcoal p-7 shadow-[0_20px_44px_-20px_rgba(26,24,22,0.6)] sm:h-[330px] sm:w-[330px] sm:p-9"
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{
-            opacity: 1,
-            scale: [1, 1.03, 1],
-          }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
-            opacity: { duration: 0.5, delay: 0.15 },
-            scale: {
-              duration: 2.5,
-              delay: 0.15,
-              ease: "easeInOut",
-              repeat: Infinity,
-              repeatType: "reverse",
-              repeatDelay: 0.3,
-            },
+            duration: 0.55,
+            delay: 0.18,
+            ease: "easeOut",
           }}
         >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,168,75,0.16),transparent_50%)]" />
           <motion.div
-            className="flex h-full w-full items-center justify-center"
-            animate={{ y: [0, -5, 0] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-full"
           >
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 2 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex h-full w-full items-center justify-center"
-            >
-              <Image
-                src={logoPath}
-                alt=""
-                width={280}
-                height={280}
-                className="h-full w-full object-contain"
-                priority
-              />
-            </motion.div>
+            <Image
+              src={logoPath}
+              alt=""
+              width={420}
+              height={300}
+              className="mx-auto h-auto w-full max-w-[220px] object-contain sm:max-w-[260px]"
+              priority
+            />
           </motion.div>
         </motion.div>
       </div>

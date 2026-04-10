@@ -7,42 +7,51 @@ export function Services() {
   return (
     <section
       id="services"
-      className="scroll-mt-20 bg-warm-cream px-4 py-16 sm:py-20 md:py-24"
+      className="section-shell scroll-mt-24 bg-warm-cream px-4"
       aria-labelledby="services-heading"
     >
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
+        <motion.p
+          className="section-kicker text-center"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20%" }}
+          transition={{ duration: 0.4 }}
+        >
+          What We Do
+        </motion.p>
         <motion.h2
           id="services-heading"
-          className="text-2xl font-semibold text-warm-black sm:text-3xl"
+          className="section-title mt-3 text-center"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-20%" }}
           transition={{ type: "spring", stiffness: 120, damping: 24 }}
         >
           שירותים
         </motion.h2>
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2" role="list">
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" role="list">
           {services.map((text, i) => (
             <motion.li
               key={i}
-              className="flex gap-3 rounded-lg border border-warm-sand/60 bg-warm-beige/80 p-4 shadow-sm"
+              className="glass-card group flex gap-3 p-5 sm:p-6"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
+              viewport={{ once: true, margin: "-20%" }}
               transition={{ type: "spring", stiffness: 120, damping: 22, delay: i * 0.07 }}
               whileHover={{
-                y: -2,
-                boxShadow: "0 8px 24px -8px rgba(26, 24, 22, 0.12)",
+                y: -4,
+                boxShadow: "0 18px 30px -16px rgba(26, 24, 22, 0.18)",
                 transition: { duration: 0.2 },
               }}
             >
               <motion.span
-                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent-gold"
+                className="mt-1 h-2 w-2 shrink-0 rounded-full bg-accent-gold"
                 aria-hidden
-                whileHover={{ scale: 1.4 }}
+                whileHover={{ scale: 1.5 }}
                 transition={{ type: "spring", stiffness: 400, damping: 18 }}
               />
-              <span className="text-warm-charcoal">{text}</span>
+              <span className="text-sm text-warm-charcoal sm:text-base">{text}</span>
             </motion.li>
           ))}
         </ul>

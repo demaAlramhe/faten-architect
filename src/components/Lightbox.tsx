@@ -101,19 +101,19 @@ export function Lightbox({
         role="dialog"
         aria-modal="true"
         aria-label="תצוגת גלריית תמונות"
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/92 p-4 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="relative flex h-full w-full max-w-5xl flex-col items-center justify-center"
+          className="relative flex h-full w-full max-w-6xl flex-col items-center justify-center"
         >
           <button
             type="button"
             onClick={onClose}
-            className="absolute left-4 top-4 z-10 rounded-lg bg-white/10 px-3 py-2 text-white hover:bg-white/20 focus-ring"
+            className="absolute left-4 top-4 z-10 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-white hover:bg-white/20 focus-ring"
             aria-label="סגור"
           >
             <span aria-hidden>✕</span>
@@ -124,7 +124,7 @@ export function Lightbox({
               <button
                 type="button"
                 onClick={goPrev}
-                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-white/10 p-2 text-white hover:bg-white/20 focus-ring sm:right-4"
+                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/30 bg-white/10 p-2 text-white hover:bg-white/20 focus-ring sm:right-4"
                 aria-label="תמונה קודמת"
               >
                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
@@ -140,7 +140,7 @@ export function Lightbox({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0.8, scale: 0.98 }}
                 transition={{ duration: 0.2 }}
-                className="relative max-h-[85vh] w-full max-w-4xl"
+                className="relative max-h-[85vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10"
               >
                 <Image
                   src={current.src}
@@ -158,7 +158,7 @@ export function Lightbox({
               <button
                 type="button"
                 onClick={goNext}
-                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-white/10 p-2 text-white hover:bg-white/20 focus-ring sm:left-4"
+                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/30 bg-white/10 p-2 text-white hover:bg-white/20 focus-ring sm:left-4"
                 aria-label="תמונה הבאה"
               >
                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>

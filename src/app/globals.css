@@ -7,6 +7,7 @@
     --color-warm-beige: #f5f0e8;
     --color-warm-black: #1a1816;
     --color-accent-gold: #b8860b;
+    --section-space: clamp(4.5rem, 9vw, 8rem);
   }
 
   html {
@@ -15,6 +16,7 @@
 
   body {
     @apply bg-warm-beige text-warm-black antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* LTR override for phone/email when needed */
@@ -22,21 +24,52 @@
     direction: ltr;
     unicode-bidi: embed;
   }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    line-height: 1.8;
+  }
 }
 
 @layer utilities {
   .focus-ring {
     @apply outline-none ring-2 ring-accent-gold ring-offset-2 ring-offset-warm-beige focus-visible:ring-2;
   }
+
+  .section-shell {
+    padding-block: var(--section-space);
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-warm-sand/60 bg-warm-beige/75 shadow-[0_16px_36px_-18px_rgba(26,24,22,0.22)] backdrop-blur-sm;
+  }
+
+  .section-title {
+    @apply text-3xl font-semibold leading-tight text-warm-black sm:text-4xl;
+  }
+
+  .section-kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.24em] text-accent-gold;
+  }
 }
 
-/* נגישות – גודל טקסט (משנים את גודל ה-root כדי ש-rem בכל האתר יגדלו) */
-html[data-a11y-font="large"] {
-  font-size: 118%;
+/* נגישות – גודל טקסט דינמי */
+html[data-a11y-font-scale] {
+  font-size: calc(16px * var(--a11y-font-multiplier, 1));
 }
-html[data-a11y-font="x-large"] {
-  font-size: 132%;
-}
+html[data-a11y-font-scale="90"] { --a11y-font-multiplier: 0.9; }
+html[data-a11y-font-scale="94"] { --a11y-font-multiplier: 0.94; }
+html[data-a11y-font-scale="100"] { --a11y-font-multiplier: 1; }
+html[data-a11y-font-scale="106"] { --a11y-font-multiplier: 1.06; }
+html[data-a11y-font-scale="112"] { --a11y-font-multiplier: 1.12; }
+html[data-a11y-font-scale="118"] { --a11y-font-multiplier: 1.18; }
+html[data-a11y-font-scale="124"] { --a11y-font-multiplier: 1.24; }
+html[data-a11y-font-scale="130"] { --a11y-font-multiplier: 1.3; }
 
 /* נגישות – ניגודיות גבוהה */
 html[data-a11y-contrast="high"] body {
@@ -76,4 +109,54 @@ html[data-a11y-contrast="high"] .a11y-widget svg {
 }
 html[data-a11y-contrast="high"] .a11y-widget .text-warm-charcoal {
   color: #1a1816 !important;
+}
+
+/* מצבי קריאה */
+html[data-a11y-reading="light"] body {
+  background: #faf7f1 !important;
+  color: #171512 !important;
+}
+html[data-a11y-reading="dark"] body {
+  background: #12100f !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-reading="dark"] [class*="bg-warm-beige"],
+html[data-a11y-reading="dark"] [class*="bg-warm-cream"],
+html[data-a11y-reading="dark"] [class*="bg-warm-sand"] {
+  background-color: #242120 !important;
+  color: #f5f0e8 !important;
+}
+html[data-a11y-reading="light"] [class*="bg-warm-charcoal"] {
+  background-color: #2f2c29 !important;
+}
+
+/* הדגשת קישורים */
+html[data-a11y-links="on"] a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+/* סמן גדול */
+html[data-a11y-cursor="large"], html[data-a11y-cursor="large"] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24'%3E%3Cpath fill='%23b8860b' d='M3 2l8 19l2-7l7-2z'/%3E%3C/svg%3E") 3 3, auto !important;
+}
+
+/* הדגשת כותרות */
+html[data-a11y-headings="on"] h1,
+html[data-a11y-headings="on"] h2,
+html[data-a11y-headings="on"] h3,
+html[data-a11y-headings="on"] h4,
+html[data-a11y-headings="on"] h5,
+html[data-a11y-headings="on"] h6 {
+  background: linear-gradient(transparent 68%, rgba(184, 134, 11, 0.24) 68%);
+  padding-inline: 0.1em;
+}
+
+/* הדגשת אלמנטים קליקביליים */
+html[data-a11y-clickable="on"] a,
+html[data-a11y-clickable="on"] button,
+html[data-a11y-clickable="on"] [role="button"],
+html[data-a11y-clickable="on"] input[type="submit"] {
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.45) !important;
+  border-radius: 0.7rem;
 }

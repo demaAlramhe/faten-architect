@@ -1,18 +1,30 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const STORAGE_KEY = "faten-a11y";
 
-type FontSize = "normal" | "large" | "x-large";
-type Contrast = "normal" | "high";
+type ReadingMode = "default" | "light" | "dark";
 
 interface A11yState {
-  font: FontSize;
-  contrast: Contrast;
+  fontScale: number;
+  highContrast: boolean;
+  readingMode: ReadingMode;
+  underlineLinks: boolean;
+  bigCursor: boolean;
+  highlightHeadings: boolean;
+  highlightClickable: boolean;
 }
 
-const defaultState: A11yState = { font: "normal", contrast: "normal" };
+const defaultState: A11yState = {
+  fontScale: 100,
+  highContrast: false,
+  readingMode: "default",
+  underlineLinks: false,
+  bigCursor: false,
+  highlightHeadings: false,
+  highlightClickable: false,
+};
 
 function loadState(): A11yState {
   if (typeof window === "undefined") return defaultState;
@@ -34,8 +46,13 @@ function saveState(state: A11yState) {
 
 function applyState(state: A11yState) {
   const root = document.documentElement;
-  root.setAttribute("data-a11y-font", state.font);
-  root.setAttribute("data-a11y-contrast", state.contrast);
+  root.setAttribute("data-a11y-font-scale", String(state.fontScale));
+  root.setAttribute("data-a11y-contrast", state.highContrast ? "high" : "normal");
+  root.setAttribute("data-a11y-reading", state.readingMode);
+  root.setAttribute("data-a11y-links", state.underlineLinks ? "on" : "off");
+  root.setAttribute("data-a11y-cursor", state.bigCursor ? "large" : "normal");
+  root.setAttribute("data-a11y-headings", state.highlightHeadings ? "on" : "off");
+  root.setAttribute("data-a11y-clickable", state.highlightClickable ? "on" : "off");
 }
 
 const accessibilitySvg = (
@@ -61,6 +78,8 @@ const accessibilitySvg = (
 export function AccessibilityFloatingBadge() {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<A11yState>(defaultState);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstControlRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const s = loadState();
@@ -77,79 +96,208 @@ export function AccessibilityFloatingBadge() {
     });
   }, []);
 
-  const handleFont = (font: FontSize) => updateState({ font });
-  const toggleContrast = () => updateState({ contrast: state.contrast === "high" ? "normal" : "high" });
+  const adjustFont = (delta: number) => {
+    const next = Math.max(90, Math.min(130, state.fontScale + delta));
+    updateState({ fontScale: next });
+  };
+
+  const toggle = (key: keyof Omit<A11yState, "fontScale" | "readingMode">) =>
+    updateState({ [key]: !state[key] } as Partial<A11yState>);
+
+  const cycleReadingMode = () => {
+    const nextMode: ReadingMode =
+      state.readingMode === "default"
+        ? "light"
+        : state.readingMode === "light"
+          ? "dark"
+          : "default";
+    updateState({ readingMode: nextMode });
+  };
+
+  const resetAll = () => {
+    setState(defaultState);
+    saveState(defaultState);
+    applyState(defaultState);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    firstControlRef.current?.focus();
+
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const onOutsideClick = (event: MouseEvent) => {
+      if (!panelRef.current) return;
+      if (!panelRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onEscape);
+    document.addEventListener("mousedown", onOutsideClick);
+    return () => {
+      document.removeEventListener("keydown", onEscape);
+      document.removeEventListener("mousedown", onOutsideClick);
+    };
+  }, [open]);
+
+  const readingLabel =
+    state.readingMode === "default"
+      ? "רגיל"
+      : state.readingMode === "light"
+        ? "קריאה בהירה"
+        : "קריאה כהה";
+
+  const optionButtonClass =
+    "rounded-xl border border-warm-sand/70 bg-white/70 px-3 py-2 text-xs font-medium text-warm-charcoal transition hover:border-accent-gold/45 hover:bg-white focus-ring";
+  const toggleClass =
+    "rounded-xl border px-3 py-2 text-xs font-medium transition focus-ring";
 
   return (
     <div className="a11y-widget fixed bottom-6 left-6 z-[9999] flex flex-col items-end gap-2">
       {open && (
         <div
-          className="a11y-widget rounded-xl border-2 border-accent-gold bg-warm-beige p-4 shadow-xl min-w-[200px]"
+          ref={panelRef}
+          id="a11y-panel"
+          className="a11y-widget w-[min(92vw,360px)] rounded-2xl border border-warm-sand/70 bg-warm-beige/95 p-4 shadow-[0_26px_45px_-22px_rgba(26,24,22,0.45)] backdrop-blur-sm sm:p-5"
           role="dialog"
+          aria-modal="false"
           aria-label="הגדרות נגישות"
         >
-          <p className="mb-3 text-sm font-bold text-warm-charcoal">הגדרות נגישות</p>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm text-warm-charcoal">גודל טקסט</span>
-              <div className="flex gap-1">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-sm font-semibold tracking-wide text-warm-charcoal">הגדרות נגישות</p>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="rounded-full border border-warm-sand/80 px-2 py-1 text-xs text-warm-charcoal transition hover:bg-white/70 focus-ring"
+              aria-label="סגירת תפריט נגישות"
+            >
+              סגור
+            </button>
+          </div>
+
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="rounded-xl border border-warm-sand/70 bg-white/45 p-3 sm:col-span-2">
+              <p className="mb-2 text-xs font-semibold text-warm-charcoal/85">גודל טקסט ({state.fontScale}%)</p>
+              <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => handleFont("normal")}
-                  className="rounded px-2 py-1 text-xs font-medium transition bg-warm-sand text-warm-charcoal hover:bg-warm-stone data-[active]:bg-accent-gold data-[active]:text-white"
-                  data-active={state.font === "normal"}
-                  aria-pressed={state.font === "normal"}
+                  ref={firstControlRef}
+                  onClick={() => adjustFont(-6)}
+                  className={optionButtonClass}
                 >
-                  רגיל
+                  הקטן טקסט
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleFont("large")}
-                  className="rounded px-2 py-1 text-xs font-medium transition bg-warm-sand text-warm-charcoal hover:bg-warm-stone data-[active]:bg-accent-gold data-[active]:text-white"
-                  data-active={state.font === "large"}
-                  aria-pressed={state.font === "large"}
+                  onClick={() => adjustFont(6)}
+                  className={optionButtonClass}
                 >
-                  גדול
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFont("x-large")}
-                  className="rounded px-2 py-1 text-xs font-medium transition bg-warm-sand text-warm-charcoal hover:bg-warm-stone data-[active]:bg-accent-gold data-[active]:text-white"
-                  data-active={state.font === "x-large"}
-                  aria-pressed={state.font === "x-large"}
-                >
-                  גדול+
+                  הגדל טקסט
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm text-warm-charcoal">ניגודיות גבוהה</span>
-              <button
-                type="button"
-                onClick={toggleContrast}
-                className="rounded px-2 py-1 text-xs font-medium transition bg-warm-sand text-warm-charcoal hover:bg-warm-stone data-[active]:bg-accent-gold data-[active]:text-white"
-                data-active={state.contrast === "high"}
-                aria-pressed={state.contrast === "high"}
-              >
-                {state.contrast === "high" ? "כבוי" : "הפעל"}
-              </button>
-            </div>
+
+            <button
+              type="button"
+              onClick={() => toggle("highContrast")}
+              className={`${toggleClass} ${
+                state.highContrast
+                  ? "border-accent-gold/60 bg-accent-gold/15 text-accent-gold"
+                  : "border-warm-sand/70 bg-white/55 text-warm-charcoal"
+              }`}
+              aria-pressed={state.highContrast}
+            >
+              ניגודיות גבוהה
+            </button>
+
+            <button
+              type="button"
+              onClick={cycleReadingMode}
+              className={optionButtonClass}
+              aria-label="שינוי מצב קריאה"
+            >
+              מצב קריאה: {readingLabel}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggle("underlineLinks")}
+              className={`${toggleClass} ${
+                state.underlineLinks
+                  ? "border-accent-gold/60 bg-accent-gold/15 text-accent-gold"
+                  : "border-warm-sand/70 bg-white/55 text-warm-charcoal"
+              }`}
+              aria-pressed={state.underlineLinks}
+            >
+              קו תחתון לקישורים
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggle("bigCursor")}
+              className={`${toggleClass} ${
+                state.bigCursor
+                  ? "border-accent-gold/60 bg-accent-gold/15 text-accent-gold"
+                  : "border-warm-sand/70 bg-white/55 text-warm-charcoal"
+              }`}
+              aria-pressed={state.bigCursor}
+            >
+              סמן עכבר גדול
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggle("highlightHeadings")}
+              className={`${toggleClass} ${
+                state.highlightHeadings
+                  ? "border-accent-gold/60 bg-accent-gold/15 text-accent-gold"
+                  : "border-warm-sand/70 bg-white/55 text-warm-charcoal"
+              }`}
+              aria-pressed={state.highlightHeadings}
+            >
+              הדגשת כותרות
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggle("highlightClickable")}
+              className={`${toggleClass} ${
+                state.highlightClickable
+                  ? "border-accent-gold/60 bg-accent-gold/15 text-accent-gold"
+                  : "border-warm-sand/70 bg-white/55 text-warm-charcoal"
+              }`}
+              aria-pressed={state.highlightClickable}
+            >
+              הדגשת כפתורים וקישורים
+            </button>
           </div>
-          <a
-            href="#main"
-            onClick={() => setOpen(false)}
-            className="mt-3 block w-full rounded-lg bg-accent-gold px-3 py-2 text-center text-sm font-semibold text-white no-underline transition hover:bg-accent-gold-dark focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2"
-          >
-            דלג לתוכן הראשי
-          </a>
+
+          <div className="mt-4 flex gap-2">
+            <button
+              type="button"
+              onClick={resetAll}
+              className="flex-1 rounded-xl border border-warm-sand/75 bg-white/65 px-3 py-2 text-xs font-semibold text-warm-charcoal transition hover:bg-white focus-ring"
+            >
+              איפוס נגישות
+            </button>
+            <a
+              href="#main"
+              onClick={() => setOpen(false)}
+              className="flex-1 rounded-xl bg-accent-gold px-3 py-2 text-center text-xs font-semibold text-white no-underline transition hover:bg-accent-gold-dark focus-ring focus-visible:ring-offset-warm-beige"
+            >
+              דלג לתוכן
+            </a>
+          </div>
         </div>
       )}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="a11y-widget flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent-gold bg-warm-beige text-accent-gold shadow-lg transition hover:scale-105 hover:border-accent-gold-light hover:bg-warm-cream focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2"
+        className="a11y-widget flex h-14 w-14 items-center justify-center rounded-full border border-accent-gold/75 bg-warm-beige/95 text-accent-gold shadow-[0_16px_28px_-14px_rgba(26,24,22,0.55)] transition hover:-translate-y-0.5 hover:border-accent-gold hover:bg-white focus-visible:ring-2 focus-visible:ring-accent-gold focus-visible:ring-offset-2"
         aria-label={open ? "סגור תפריט נגישות" : "פתח תפריט נגישות"}
         aria-expanded={open}
+        aria-controls="a11y-panel"
         title="הגדרות נגישות"
       >
         {accessibilitySvg}

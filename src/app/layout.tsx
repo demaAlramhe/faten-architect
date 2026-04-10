@@ -42,11 +42,20 @@ export const metadata: Metadata = {
     title: `${business.name} | אדריכלות ועיצוב פנים – ${business.city}`,
     description:
       "תכנון ועיצוב שמדייק את החיים שלך — פונקציונלי, אלגנטי ומרשים. אדריכלית ומעצבת פנים משפרעם.",
+    images: [
+      {
+        url: "/projects/logo.png.jpeg",
+        width: 1200,
+        height: 630,
+        alt: `${business.name} - Architecture & Interior Design`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${business.name} | אדריכלות ועיצוב פנים`,
     description: "תכנון ועיצוב שמדייק את החיים שלך — פונקציונלי, אלגנטי ומרשים.",
+    images: ["/projects/logo.png.jpeg"],
   },
   robots: {
     index: true,
